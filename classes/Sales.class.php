@@ -27,6 +27,7 @@
 			$objSale = new stdClass();
 			$objSale->id = $id;
 			$objSale->salesman_name = trim($salesman_name);
+			$objSale->items = array();
 			$objSale->total = 0;
 
 		   	$brackets = array('[',']');
@@ -38,8 +39,9 @@
 		   			$objItem = new stdClass();
 		   			$objItem->id = $arrItem[0];
 		   			$objItem->amount = $arrItem[1];
-		   			$objItem->price = $arrItem[2];
-					$objSale->total += (float) str_replace(' ','', $objItem->price);
+		   			$objItem->price = (float) str_replace(' ','', $arrItem[2]);
+					array_push($objSale->items, $objItem);
+					$objSale->total += $objItem->price;
 		   		}
 		   	}
 			array_push($this->arrSales, $objSale);

@@ -8,29 +8,31 @@
 		}
 
 		/**
-		 * [getTotalSellers description]
+		 * [getTotalSellers Performs the total count of salesman]
 		 * @method getTotalSellers
-		 * @return [type]          [description]
+		 * @return [intger] [Total number os salesman]
 		 */
 		public function getTotalSellers() {
 			return count($this->arrSellers);
 		}
 
 		/**
-		 * [addSalesman description]
+		 * [addSalesman Add a new salesman from the list]
 		 * @method addSalesman
-		 * @param  [type]      $cpf    [description]
-		 * @param  [type]      $name   [description]
-		 * @param  [type]      $salary [description]
+		 * @param  [string] $cpf    [CPF document]
+		 * @param  [string] $name   [Salesman name]
+		 * @param  [string] $salary [Salary]
 		 */
 		public function addSalesman($cpf, $name, $salary) {
 			try {
+				// if(!Document::validate($cpf))
+				// 	throw new Exception('Invalid CPF document');
+
 				$objSalesman = new stdClass();
-
 				$objSalesman->cpf = $cpf;
-
 				$objSalesman->name = trim($name);
-				$objSalesman->salary = (float) $salary;
+				$objSalesman->salary = (float) str_replace(' ','', $salary);
+
 				$objSalesman->total_sales = 0;
 				array_push($this->arrSellers, $objSalesman);
 				return true;
@@ -40,10 +42,10 @@
 		}
 
 		/**
-		 * [getByName description]
+		 * [getByName get data os salesman filtered by name]
 		 * @method getByName
-		 * @param  [type]    $name [description]
-		 * @return [type]          [description]
+		 * @param  [string] $name [salesman name]
+		 * @return [objec] [Salesman]
 		 */
 		public function getByName($name) {
 			$objResponse = null;
@@ -57,11 +59,11 @@
 		}
 
 		/**
-		 * [updateTotalSales description]
+		 * [updateTotalSales Update total sales from salesman]
 		 * @method updateTotalSales
-		 * @param  [type]           $name [description]
-		 * @param  [type]           $sale [description]
-		 * @return [type]                 [description]
+		 * @param  [string] $name [Salemsan anme]
+		 * @param  [float] $sale [Value of total sales]
+		 * @return [boolean]
 		 */
 		public function updateTotalSales($name, $sale) {
 			$objSeller = $this->getByName($name);
@@ -75,11 +77,11 @@
 			$this->arrSellers[$index] = $objSeller;
 			return true;
 		}
-		
+
 		/**
-		 * [getWorstSeller description]
+		 * [getWorstSeller Return the worst seller registred]
 		 * @method getWorstSeller
-		 * @return [type]         [description]
+		 * @return [object] [seller]
 		 */
 		public function getWorstSeller() {
 			usort($this->arrSellers, function($a, $b) {

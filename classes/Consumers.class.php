@@ -24,12 +24,20 @@
 		 * @param  [string] $business_area [Consumer business area]
 		 */
 		public function addConsumer($cnpj, $name, $business_area) {
-			$objConsumer = new stdClass();
-			$objConsumer->cnpj = $cnpj;
-			$objConsumer->name = $name;
-			$objConsumer->business_area = $business_area;
-			$objConsumer->total_sales = 0;
-			array_push($this->arrConsumers, $objConsumer);
+			try {
+				if(!Document::validate($cnpj))
+					throw new Exception('Invalid CNPJ document');
+
+				$objConsumer = new stdClass();
+				$objConsumer->cnpj = $cnpj;
+				$objConsumer->name = $name;
+				$objConsumer->business_area = $business_area;
+				$objConsumer->total_sales = 0;
+				array_push($this->arrConsumers, $objConsumer);
+				return true;
+			} catch (Exception $e) {
+				return false;
+			}
 		}
 	}
 ?>

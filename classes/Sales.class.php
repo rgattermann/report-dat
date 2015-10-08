@@ -8,20 +8,20 @@
 		}
 
 		/**
-		 * [getTotalSales description]
+		 * [getTotalSales Performs the total count of sales]
 		 * @method getTotalSales
-		 * @return [type]        [description]
+		 * @return [integer] [Total number of sales]
 		 */
 		public function getTotalSales() {
 			return count($this->arrSales);
 		}
 
 		/**
-		 * [addSale description]
+		 * [addSale Add a new sale from the list]
 		 * @method addSale
-		 * @param  [type]  $id            [description]
-		 * @param  [type]  $salesman_name [description]
-		 * @param  [type]  $items         [description]
+		 * @param  [integer]  $id [Sale identificator]
+		 * @param  [string]  $salesman_name [Salesman_name to maket the sale]
+		 * @param  [string]  $items [Items of sale]
 		 */
 		public function addSale($id, $salesman_name, $items) {
 			$objSale = new stdClass();
@@ -39,7 +39,7 @@
 		   			$objItem->id = $arrItem[0];
 		   			$objItem->amount = $arrItem[1];
 		   			$objItem->price = $arrItem[2];
-		   			$objSale->total += (float) $objItem->price;
+					$objSale->total += (float) str_replace(' ','', $objItem->price);
 		   		}
 		   	}
 			array_push($this->arrSales, $objSale);
@@ -48,8 +48,8 @@
 		/**
 		 * [getSalesBySalesmanName description]
 		 * @method getSalesBySalesmanName
-		 * @param  [type]                 $name [description]
-		 * @return [type]                       [description]
+		 * @param  [string] $name [Name for salesman]
+		 * @return [array] [Total sales for the salesman]
 		 */
 		public function getSalesBySalesmanName($name) {
 			$objResponse = array();
@@ -61,9 +61,9 @@
 		}
 
 		/**
-		 * [getAllSalesman description]
+		 * [getAllSalesman get all salesman to maketed a sal]
 		 * @method getAllSalesman
-		 * @return [type]         [description]
+		 * @return [array] [Whit all salesman name to maketed a sale]
 		 */
 		public function getAllSalesman() {
 			$objResponse = array();
@@ -74,9 +74,9 @@
 		}
 
 		/**
-		 * [getSellersAmount description]
+		 * [getSellersAmount Calculate the total os salesman sales]
 		 * @method getSellersAmount
-		 * @return [type]           [description]
+		 * @return [array] [Content object with salesman_name and sum of sales]
 		 */
 		public function getSellersAmount() {
 			$objResponse = array();
@@ -92,9 +92,9 @@
 		}
 
 		/**
-		 * [getMostExpensiveSale description]
+		 * [getMostExpensiveSale Return the most expensive sale registred]
 		 * @method getMostExpensiveSale
-		 * @return [type]               [description]
+		 * @return [object] [sale]
 		 */
 		public function getMostExpensiveSale() {
 			usort($this->arrSales, function($a, $b) {

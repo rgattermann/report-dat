@@ -12,14 +12,13 @@
 			$this->input_dir = 'data/in';
 			$this->output_dir = 'data/out';
 			$this->arrSellers = array();
-
 			//erase files on diretoryes in out
 		}
 
 		/**
-		 * [watch description]
+		 * [watch Watch input dir for files to read]
 		 * @method watch
-		 * @return [type] [description]
+		 * @return
 		 */
 		public function watch() {
 			$totalFiles = 0;
@@ -46,10 +45,10 @@
 		}
 
 		/**
-		 * [extractInfo description]
+		 * [extractInfo Extract data from files]
 		 * @method extractInfo
-		 * @param  [type]      $filename [description]
-		 * @return [type]                [description]
+		 * @param  [string] $filename [Filename content data]
+		 * @return [type]
 		 */
 		private function extractInfo($filename) {
 	    	$modelSellers = new Sellers();
@@ -81,7 +80,6 @@
 			   	$salesman_name = $arrLine[3];
 
 			   	$modelSales->addSale($id, $salesman_name, $items);
-
 			   }
 			}
 			fclose($file_handle);
@@ -99,10 +97,10 @@
 		}
 
 		/**
-		 * [generateReport description]
+		 * [generateReport Generate a report peer file readed and save on output dir]
 		 * @method generateReport
-		 * @param  [type]         $filename [description]
-		 * @return [type]                   [description]
+		 * @param  [string] $filename [Filename content report data]
+		 * @return
 		 */
 		private function generateReport($filename) {
 			$arrReportsLines = array();
@@ -118,11 +116,11 @@
 		}
 
 		/**
-		 * [saveFile description]
+		 * [saveFile Save file on disk]
 		 * @method saveFile
-		 * @param  [type]   $filename [description]
-		 * @param  [type]   $content  [description]
-		 * @return [type]             [description]
+		 * @param  [string]   $filename [Filename to save]
+		 * @param  [string]   $content  [Content to save]
+		 * @return
 		 */
 		private function saveFile($filename, $content) {
 			$fullpathFile = $this->output_dir.'/'.$filename;

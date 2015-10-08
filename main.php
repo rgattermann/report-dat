@@ -1,6 +1,6 @@
 <?php
 	require_once 'autoload.php';
-
+	
 	try {
 		$searchboot = new Search();
 		$searchboot->watch();

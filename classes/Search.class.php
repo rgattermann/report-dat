@@ -58,13 +58,14 @@
 	    	$modelSellers = new Sellers();
 			$modelConsumers = new Consumers();
 			$modelSales = new Sales();
+			$arrSalesman = array();
 
 			$pathFile = $this->input_dir.'/'.$filename;
 
-    		$file_handle = fopen($pathFile, 'r');
-			while(!feof($file_handle)) {
-			   $line = fgets($file_handle);
+			$fileContent = file($pathFile);
+			natsort($fileContent);
 
+			foreach($fileContent as $line) {
 			   $arrLine = explode('ç', $line);
 			   if($arrLine[0] == '001') {
 				   	$cpf = $arrLine[1];
@@ -83,10 +84,9 @@
 			   	$items = $arrLine[2];
 			   	$salesman_name = $arrLine[3];
 
-			   	$modelSales->addSale($id, $salesman_name, $items);
+			   	$modelSales->addSale($id, $salesman_name, $items, $modelSellers->getAll());
 			   }
 			}
-			fclose($file_handle);
 
 			$totalConsumers = $totalSellers = $expensivesaleID = 0;
 			$worstSellerName = '';
@@ -98,10 +98,10 @@
 					$modelSellers->updateTotalSales($obj->name, $obj->total);
 				}
 				$worstSellerName = $modelSellers->getWorstSeller()->name;
+				$expensivesaleID = $modelSales->getMostExpensiveSale()->id;
 			}
 
 			$totalConsumers = $modelConsumers->getTotalConsumers();
-			$expensivesaleID = $modelSales->getMostExpensiveSale()->id;
 			$reportFilename = basename($filename, '.'.pathinfo($filename, PATHINFO_EXTENSION));
 			$this->generateReport($reportFilename, $totalConsumers, $totalSellers, $expensivesaleID, $worstSellerName);
 		}

@@ -16,6 +16,10 @@
 			return count($this->arrSellers);
 		}
 
+		public function getAll() {
+			return $this->arrSellers;
+		}
+
 		/**
 		 * [addSalesman Add a new salesman from the list]
 		 * @method addSalesman
@@ -25,8 +29,8 @@
 		 */
 		public function addSalesman($cpf, $name, $salary) {
 			try {
-				if(!Document::validate($cpf))
-					throw new Exception('Invalid CPF document');
+				//if(!Document::validate($cpf))
+				//	throw new Exception('Invalid CPF document');
 
 				$objSalesman = new stdClass();
 				$objSalesman->cpf = $cpf;

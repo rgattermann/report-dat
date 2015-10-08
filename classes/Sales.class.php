@@ -23,28 +23,40 @@
 		 * @param  [string]  $salesman_name [Salesman_name to maket the sale]
 		 * @param  [string]  $items [Items of sale]
 		 */
-		public function addSale($id, $salesman_name, $items) {
-			$objSale = new stdClass();
-			$objSale->id = $id;
-			$objSale->salesman_name = trim($salesman_name);
-			$objSale->items = array();
-			$objSale->total = 0;
+		public function addSale($id, $salesman_name, $items, $arrSellers) {
+			try {
+				$objSale = new stdClass();
+				$objSale->id = $id;
+				$objSale->salesman_name = trim($salesman_name);
+				$objSale->total = 0;
 
-		   	$brackets = array('[',']');
-			$itemsSale = str_replace($brackets, '', $items);
+				$find = false;
+				foreach($arrSellers as $objSalesman) {
+					if($objSalesman->name == $objSale->salesman_name)
+						$find = true;
+				}
 
-		   	if(trim($itemsSale)) {
-		   		foreach (explode(',', $itemsSale) as $item) {
-		   			$arrItem = explode('-', $item);
-		   			$objItem = new stdClass();
-		   			$objItem->id = $arrItem[0];
-		   			$objItem->amount = $arrItem[1];
-		   			$objItem->price = (float) str_replace(' ','', $arrItem[2]);
-					array_push($objSale->items, $objItem);
-					$objSale->total += $objItem->price;
-		   		}
-		   	}
-			array_push($this->arrSales, $objSale);
+				if(!$find)
+					throw new Exception('No salersman data find');
+
+				$brackets = array('[',']');
+				$itemsSale = str_replace($brackets, '', $items);
+
+				if(trim($itemsSale)) {
+					foreach (explode(',', $itemsSale) as $item) {
+						$arrItem = explode('-', $item);
+						$objItem = new stdClass();
+						$objItem->id = $arrItem[0];
+						$objItem->amount = $arrItem[1];
+						$objItem->price = $arrItem[2];
+						$objSale->total += (float) str_replace(' ','', $objItem->price);
+					}
+				}
+				array_push($this->arrSales, $objSale);
+				return true;
+			} catch (Exception $e) {
+				return false;
+			}
 		}
 
 		/**

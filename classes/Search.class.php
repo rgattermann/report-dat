@@ -1,4 +1,7 @@
 <?php
+	/**
+	 *
+	 */
 	class Search {
 
 		private $input_dir;
@@ -9,9 +12,16 @@
 			$this->input_dir = 'data/in';
 			$this->output_dir = 'data/out';
 			$this->arrSellers = array();
+
+			//erase files on diretoryes in out
 		}
 
-		public function init() {
+		/**
+		 * [watch description]
+		 * @method watch
+		 * @return [type] [description]
+		 */
+		public function watch() {
 			$totalFiles = 0;
 
 			while(true) {
@@ -35,14 +45,19 @@
 			}
 		}
 
+		/**
+		 * [extractInfo description]
+		 * @method extractInfo
+		 * @param  [type]      $filename [description]
+		 * @return [type]                [description]
+		 */
 		private function extractInfo($filename) {
-
 	    	$modelSellers = new Sellers();
 			$modelConsumers = new Consumers();
 			$modelSales = new Sales();
-			
+
 			$pathFile = $this->input_dir.'/'.$filename;
-    		
+
     		$file_handle = fopen($pathFile, 'r');
 			while(!feof($file_handle)) {
 			   $line = fgets($file_handle);
@@ -83,6 +98,12 @@
 			$this->generateReport(basename($filename, '.'.pathinfo($filename, PATHINFO_EXTENSION)));
 		}
 
+		/**
+		 * [generateReport description]
+		 * @method generateReport
+		 * @param  [type]         $filename [description]
+		 * @return [type]                   [description]
+		 */
 		private function generateReport($filename) {
 			$arrReportsLines = array();
 			array_push($arrReportsLines, 'Number of clients: '.$this->totalConsumers);
@@ -96,6 +117,13 @@
 			$this->saveFile($reportFilename, $content);
 		}
 
+		/**
+		 * [saveFile description]
+		 * @method saveFile
+		 * @param  [type]   $filename [description]
+		 * @param  [type]   $content  [description]
+		 * @return [type]             [description]
+		 */
 		private function saveFile($filename, $content) {
 			$fullpathFile = $this->output_dir.'/'.$filename;
 			$objFile = fopen($fullpathFile, 'w');

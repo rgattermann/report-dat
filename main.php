@@ -3,7 +3,7 @@
 	
 	try {
 		$searchboot = new Search();
-		$searchboot->init();
+		$searchboot->watch();
 	} catch (Exception $e) {
 	    echo $e->getMessage().PHP_EOL;
 	}

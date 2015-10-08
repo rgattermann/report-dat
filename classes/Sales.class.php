@@ -7,10 +7,22 @@
 			$this->arrSales = array();
 		}
 
+		/**
+		 * [getTotalSales description]
+		 * @method getTotalSales
+		 * @return [type]        [description]
+		 */
 		public function getTotalSales() {
 			return count($this->arrSales);
 		}
 
+		/**
+		 * [addSale description]
+		 * @method addSale
+		 * @param  [type]  $id            [description]
+		 * @param  [type]  $salesman_name [description]
+		 * @param  [type]  $items         [description]
+		 */
 		public function addSale($id, $salesman_name, $items) {
 			$objSale = new stdClass();
 			$objSale->id = $id;
@@ -19,7 +31,7 @@
 
 		   	$brackets = array('[',']');
 			$itemsSale = str_replace($brackets, '', $items);
-			
+
 		   	if(trim($itemsSale)) {
 		   		foreach (explode(',', $itemsSale) as $item) {
 		   			$arrItem = explode('-', $item);
@@ -33,6 +45,12 @@
 			array_push($this->arrSales, $objSale);
 		}
 
+		/**
+		 * [getSalesBySalesmanName description]
+		 * @method getSalesBySalesmanName
+		 * @param  [type]                 $name [description]
+		 * @return [type]                       [description]
+		 */
 		public function getSalesBySalesmanName($name) {
 			$objResponse = array();
 			foreach($this->arrSales as $objSale) {
@@ -42,6 +60,11 @@
 			return $objResponse;
 		}
 
+		/**
+		 * [getAllSalesman description]
+		 * @method getAllSalesman
+		 * @return [type]         [description]
+		 */
 		public function getAllSalesman() {
 			$objResponse = array();
 			foreach($this->arrSales as $objSale) {
@@ -50,6 +73,11 @@
 			return array_unique($objResponse);
 		}
 
+		/**
+		 * [getSellersAmount description]
+		 * @method getSellersAmount
+		 * @return [type]           [description]
+		 */
 		public function getSellersAmount() {
 			$objResponse = array();
 			$arrSalesman = $this->getAllSalesman();
@@ -62,7 +90,12 @@
 
 			return $objResponse;
 		}
-		
+
+		/**
+		 * [getMostExpensiveSale description]
+		 * @method getMostExpensiveSale
+		 * @return [type]               [description]
+		 */
 		public function getMostExpensiveSale() {
 			usort($this->arrSales, function($a, $b) {
 				if($a->total == $b->total)

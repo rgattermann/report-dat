@@ -15,7 +15,7 @@
 			$objSalesman = new stdClass();
 			$objSalesman->cpf = $cpf;
 			$objSalesman->name = trim($name);
-			$objSalesman->salary = $salary;
+			$objSalesman->salary = (float) $salary;
 			$objSalesman->total_sales = 0;
 			array_push($this->arrSellers, $objSalesman);
 		}

@@ -1,18 +1,22 @@
 <?php
-	/**
-	 *
-	 */
 	class Search {
 
 		private $input_dir;
 		private $output_dir;
-		private $arrSellers;
 
 		public function __construct() {
 			$this->input_dir = 'data/in';
 			$this->output_dir = 'data/out';
-			$this->arrSellers = array();
-			//erase files on diretoryes in out
+
+			foreach (new DirectoryIterator($this->input_dir) as $fileInfo) {
+			    if(!$fileInfo->isDot())
+			        unlink($fileInfo->getPathname());
+			}
+
+			foreach (new DirectoryIterator($this->output_dir) as $fileInfo) {
+			    if(!$fileInfo->isDot())
+			        unlink($fileInfo->getPathname());
+			}
 		}
 
 		/**
@@ -84,16 +88,22 @@
 			}
 			fclose($file_handle);
 
-			$arrSellersAmount = $modelSales->getSellersAmount();
-			foreach($arrSellersAmount as $obj) {
-				$modelSellers->updateTotalSales($obj->name, $obj->total);
+			$totalConsumers = $totalSellers = $expensivesaleID = 0;
+			$worstSellerName = '';
+
+			$totalSellers = $modelSellers->getTotalSellers();
+			if($totalSellers > 0) {
+				$arrSellersAmount = $modelSales->getSellersAmount();
+				foreach($arrSellersAmount as $obj) {
+					$modelSellers->updateTotalSales($obj->name, $obj->total);
+				}
+				$worstSellerName = $modelSellers->getWorstSeller()->name;
 			}
 
-			$this->totalConsumers = $modelConsumers->getTotalConsumers();
-			$this->totalSellers = $modelSellers->getTotalSellers();
-			$this->expensivesaleID = $modelSales->getMostExpensiveSale()->id;
-			$this->worstSellerName = $modelSellers->getWorstSeller()->name;
-			$this->generateReport(basename($filename, '.'.pathinfo($filename, PATHINFO_EXTENSION)));
+			$totalConsumers = $modelConsumers->getTotalConsumers();
+			$expensivesaleID = $modelSales->getMostExpensiveSale()->id;
+			$reportFilename = basename($filename, '.'.pathinfo($filename, PATHINFO_EXTENSION));
+			$this->generateReport($reportFilename, $totalConsumers, $totalSellers, $expensivesaleID, $worstSellerName);
 		}
 
 		/**
@@ -102,12 +112,12 @@
 		 * @param  [string] $filename [Filename content report data]
 		 * @return
 		 */
-		private function generateReport($filename) {
+		private function generateReport($filename, $totalConsumers, $totalSellers, $expensivesaleID, $worstSellerName) {
 			$arrReportsLines = array();
-			array_push($arrReportsLines, 'Number of clients: '.$this->totalConsumers);
-			array_push($arrReportsLines, 'Number of salesman: '.$this->totalSellers);
-			array_push($arrReportsLines, 'The most expensive sale is the sale: '.$this->expensivesaleID);
-			array_push($arrReportsLines, 'The worst salesman ever is: '.$this->worstSellerName);
+			array_push($arrReportsLines, 'Number of clients: '.$totalConsumers);
+			array_push($arrReportsLines, 'Number of salesman: '.$totalSellers);
+			array_push($arrReportsLines, 'The most expensive sale is the sale: '.$expensivesaleID);
+			array_push($arrReportsLines, 'The worst salesman ever is: '.$worstSellerName);
 
 			$content = implode(PHP_EOL, $arrReportsLines);
 			$reportFilename = $filename.'.done.dat';

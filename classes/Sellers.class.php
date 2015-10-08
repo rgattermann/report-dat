@@ -25,8 +25,8 @@
 		 */
 		public function addSalesman($cpf, $name, $salary) {
 			try {
-				// if(!Document::validate($cpf))
-				// 	throw new Exception('Invalid CPF document');
+				if(!Document::validate($cpf))
+					throw new Exception('Invalid CPF document');
 
 				$objSalesman = new stdClass();
 				$objSalesman->cpf = $cpf;

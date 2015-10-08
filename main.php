@@ -1,7 +1,10 @@
 <?php
 	require_once 'autoload.php';
-
-	$searchboot = new Search();
-	$searchboot->colectData();
-	$searchboot->generateReport();
+	
+	try {
+		$searchboot = new Search();
+		$searchboot->colectData();
+	} catch (Exception $e) {
+	    echo $e->getMessage().PHP_EOL;
+	}
 ?>

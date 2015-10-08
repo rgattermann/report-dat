@@ -13,10 +13,6 @@
 
 		public function colectData() {
 
-			$modelSellers = new Sellers();
-			$modelConsumers = new Consumers();
-			$modelSales = new Sales();
-			
 			$dir = new DirectoryIterator(realpath($this->input_dir));
 			
 			foreach($dir as $fileinfo) {
@@ -24,6 +20,9 @@
 			    	$filename = $fileinfo->getFilename();
 			    	$pathFile = $this->input_dir.'/'.$filename;
 			    	$ext = pathinfo($filename, PATHINFO_EXTENSION);
+			    	$modelSellers = new Sellers();
+					$modelConsumers = new Consumers();
+					$modelSales = new Sales();
 
 			    	if(in_array($ext, array('dat'))) {
 			    		$file_handle = fopen($pathFile, 'r');
@@ -53,48 +52,40 @@
 						   }
 						}
 						fclose($file_handle);
+
+						$arrSellersAmount = $modelSales->getSellersAmount();
+						foreach($arrSellersAmount as $obj) {
+							$modelSellers->updateTotalSales($obj->name, $obj->total);
+						}
+
+						$this->totalConsumers = $modelConsumers->getTotalConsumers();
+						$this->totalSellers = $modelSellers->getTotalSellers();
+						$this->expensivesaleID = $modelSales->getMostExpensiveSale()->id;
+						$this->worstSellerName = $modelSellers->getWorstSeller()->name;
+						$this->generateReport(basename($filename, '.'.$ext));
 					}
 			    }
 			}
-
-			$arrSellersAmount = $modelSales->getSellersAmount();
-			foreach ($arrSellersAmount as $obj) {
-				$modelSellers->updateTotalSales($obj->name, $obj->total);
-			}
-
-			$this->totalConsumers = $modelConsumers->getTotalConsumers();
-			$this->totalSellers = $modelSellers->getTotalSellers();
-			$this->expensivesaleID = $modelSales->getMostExpensiveSale()->id;
-			$this->worstSellerName = $modelSellers->getWorstSeller()->name;
 		}
 
-		public function generateReport() {
-			echo "Number of clients: ".$this->totalConsumers."\n\r";
-			echo "Number of salesman: ".$this->totalSellers."\n\r";
-			echo "The most expensive sale is the sale: ".$this->expensivesaleID."\n\r";
-			echo "The worst salesman ever is: ".$this->worstSellerName."\n\r";
+		private function generateReport($filename) {
+			$arrReportsLines = array();
+			array_push($arrReportsLines, 'Number of clients: '.$this->totalConsumers);
+			array_push($arrReportsLines, 'Number of salesman: '.$this->totalSellers);
+			array_push($arrReportsLines, 'The most expensive sale is the sale: '.$this->expensivesaleID);
+			array_push($arrReportsLines, 'The worst salesman ever is: '.$this->worstSellerName);
+			
+			$content = implode(PHP_EOL, $arrReportsLines);
+			$reportFilename = $filename.'.done.dat';
+
+			$this->saveFile($reportFilename, $content);
 		}
 
-		
-
-		private function gravarArquivoTexto( $strArquivo, $strTexto, $bolApagarSeJaExiste = false, $bolUTF8 = true ) {
-		 
-			if ( !is_dir( dirname( $strArquivo ) ) )
-			{
-				mkdir( dirname( $strArquivo ), 0755, true );
-			}
-		 
-			$strModo = ($bolApagarSeJaExiste) ? "w" : "a";
-		 
-			$criarArquivo = (!is_file( $strArquivo ) );
-			$objTxt = fopen( $strArquivo, $strModo );
-			if ( $criarArquivo && $bolUTF8 )
-			{
-				//UTF-8
-				fwrite( $objTxt, pack( "CCC", 0xef, 0xbb, 0xbf ) );
-			}
-			fwrite( $objTxt, $strTexto );
-			fclose( $objTxt );
+		private function saveFile($filename, $content) {
+			$fullpathFile = $this->output_dir.'/'.$filename;
+			$objFile = fopen($fullpathFile, 'w');
+			fwrite($objFile, $content);
+			fclose($objFile);
 		}
 		
 		private function lerArquivoTexto($strArquivo) {
@@ -105,15 +96,5 @@
 				return $texto;
 			}
 		}
-
-		// //Carregando a classe e instanciando
-		// require("classes/clsArquivo.php");
-		// $objArquivo = new clsArquivo();
-		 
-		// //Lendo um arquivo e armazenando o conteúdo em uma variável:
-		// $conteudo = $objArquivo->lerArquivoTexto("C:\Arquivo.txt");
-		 
-		// //Gravando o conteúdo de uma variável em um arquivo texto
-		// $objArquivo->gravarArquivoTexto("C:\Outro_Arquivo.txt", $conteudo);
 	}
 ?>
